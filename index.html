@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML Power Washing Quote Request</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-500 to-purple-500 p-6">
+  <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">ML Power Washing Quote Request</h2>
+
+    <form id="estimateForm" class="space-y-4">
+      <!-- Select Service -->
+      <div>
+        <label class="block font-semibold text-gray-700">Select Service:</label>
+        <select id="serviceType" class="w-full p-2 border border-gray-300 rounded focus:outline-none" required>
+          <option value="">Select a service</option>
+          <option value="houseWash">House Wash</option>
+          <option value="patioClean">Patio Cleaning</option>
+          <option value="fenceClean">Fence Cleaning</option>
+          <option value="deckClean">Deck Cleaning</option>
+          <option value="windowClean">Window Cleaning</option>
+        </select>
+      </div>
+
+      <!-- Area Input -->
+      <div id="areaInput" class="hidden">
+        <label class="block font-semibold text-gray-700">Enter Area (sq ft):</label>
+        <input type="number" id="area" class="w-full p-2 border border-gray-300 rounded focus:outline-none" placeholder="Enter square footage" min="0" required>
+        <div id="areaError" class="text-red-500 text-sm hidden">Please enter a valid number.</div>
+      </div>
+
+      <!-- Linear Feet Input -->
+      <div id="linearFeetInput" class="hidden">
+        <label class="block font-semibold text-gray-700">Enter Length (linear ft):</label>
+        <input type="number" id="linearFeet" class="w-full p-2 border border-gray-300 rounded focus:outline-none" placeholder="Enter linear feet" min="0" required>
+        <div id="linearFeetError" class="text-red-500 text-sm hidden">Please enter a valid number.</div>
+      </div>
+
+      <!-- Window Count Input -->
+      <div id="windowCountInput" class="hidden">
+        <label class="block font-semibold text-gray-700">Number of Windows:</label>
+        <input type="number" id="windowCount" class="w-full p-2 border border-gray-300 rounded focus:outline-none" placeholder="Enter number of windows" min="0" required>
+        <div id="windowCountError" class="text-red-500 text-sm hidden">Please enter a valid number.</div>
+        <label class="block font-semibold text-gray-700">Window Type:</label>
+          <select id="windowType" class="w-full  p-2 border border-gray-300 rounded focus:outline-none">
+            <option value="exterior">Exterior Only</option>
+            <option value="interiorExterior">Interior & Exterior (Price x2)</option>
+          </select>
+      </div>
+
+      <!-- Follow-up Questions -->
+      <div id="followUpQuestions" class="space-y-4 hidden">
+        <div>
+          <label class="block font-semibold text-gray-700">How long since it was last cleaned?</label>
+          <select id="yearsSinceCleaned" class="w-full p-2 border border-gray-300 rounded focus:outline-none">
+            <option value="1">1-2 years</option>
+            <option value="3">3 years (+$25)</option>
+            <option value="4">4 years (+$50)</option>
+          </select>
+        </div>
+
+        <!-- Material Type Follow-up -->
+        <div id="materialTypeContainer" class="hidden">
+          <label class="block font-semibold text-gray-700">Material Type:</label>
+          <select id="materialType" class="w-full p-2 border border-gray-300 rounded focus:outline-none">
+            <option value="standard">Standard</option>
+            <option value="bareWood">Bare Wood (additional charges)</option>
+            <option value="composite">Composite</option>
+            <option value="paintedWood">Painted Wood (+$25)</option>
+            <option value="vinyl">Vinyl</option>
+            <option value="hardieBoard">Hardie Board</option>
+            <option value="paintedShingle">Painted Shingle</option>
+          </select>
+        </div>
+
+        <!-- Fence Material Type Follow-up -->
+        <div id="fenceMaterialTypeContainer" class="hidden">
+          <label class="block font-semibold text-gray-700">Fence Material Type:</label>
+          <select id="fenceMaterialType" class="w-full p-2 border border-gray-300 rounded focus:outline-none">
+            <option value="composite">Composite</option>
+            <option value="bareWood">Bare Wood (price x2)</option>
+          </select>
+        </div>
+
+        <!-- Deck Material Type Follow-up -->
+        <div id="deckMaterialTypeContainer" class="hidden">
+          <label class="block font-semibold text-gray-700">Deck Material Type:</label>
+          <select id="deckMaterialType" class="w-full p-2 border border-gray-300 rounded focus:outline-none">
+            <option value="composite">Composite</option>
+            <option value="paintedWood">Painted Wood (+$25)</option>
+            <option value="bareWood">Bare Wood (price x2)</option>
+          </select>
+        </div>
+
+        <!-- Window Type Follow-up -->
+        <div id="windowTypeContainer" class="hidden">
+          <!-- <label class="block font-semibold text-gray-700">Window Type:</label>
+          <select id="windowType" class="w-full hidden p-2 border border-gray-300 rounded focus:outline-none">
+            <option value="exterior">Exterior Only</option>
+            <option value="interiorExterior">Interior & Exterior (Price x2)</option>
+          </select> -->
+        </div>
+      </div>
+
+      <!-- Estimate Button -->
+      <button type="button" onclick="calculateEstimate()" class="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 focus:outline-none">Calculate Estimate</button>
+    </form>
+
+    <!-- Display Estimate -->
+    <div id="estimateResult" class="mt-4 hidden p-4 bg-gray-50 border rounded text-gray-800">
+      <h3 class="text-xl font-semibold">Estimate</h3>
+      <p id="estimateDisplay"></p>
+    </div>
+  </div>
+
+  <script>
+    const serviceType = document.getElementById('serviceType');
+    const areaInput = document.getElementById('areaInput');
+    const linearFeetInput = document.getElementById('linearFeetInput');
+    const windowCountInput = document.getElementById('windowCountInput');
+    const followUpQuestions = document.getElementById('followUpQuestions');
+    const materialTypeContainer = document.getElementById('materialTypeContainer');
+    const fenceMaterialTypeContainer = document.getElementById('fenceMaterialTypeContainer');
+    const deckMaterialTypeContainer = document.getElementById('deckMaterialTypeContainer');
+    const windowTypeContainer = document.getElementById('windowTypeContainer');
+    const windowType = document.getElementById('windowType');
+    const estimateDisplay = document.getElementById('estimateDisplay');
+    const estimateResult = document.getElementById('estimateResult');
+
+    serviceType.addEventListener('change', () => {
+      resetInputs();
+      const service = serviceType.value;
+
+      if (service === 'houseWash' || service === 'patioClean' || service === 'deckClean') {
+        areaInput.classList.remove('hidden');
+      } else if (service === 'fenceClean') {
+        linearFeetInput.classList.remove('hidden');
+      } else if (service === 'windowClean') {
+        windowCountInput.classList.remove('hidden');
+        windowTypeContainer.classList.remove('hidden');
+        // followUpQuestions.classList.remove('hidden');
+        windowType.classList.remove('hidden');
+      }
+
+      if (service !== 'windowClean') {
+        followUpQuestions.classList.remove('hidden');
+      }
+
+      if (service === 'houseWash') {
+        materialTypeContainer.classList.remove('hidden');
+        document.getElementById('materialType').innerHTML = `
+          <option value="standard">Standard</option>
+          <option value="bareWood">Bare Wood (additional charges)</option>
+          <option value="vinyl">Vinyl</option>
+          <option value="hardieBoard">Hardie Board</option>
+          <option value="paintedShingle">Painted Shingle</option>
+        `;
+      } else if (service === 'fenceClean') {
+        fenceMaterialTypeContainer.classList.remove('hidden');
+      } else if (service === 'deckClean') {
+        deckMaterialTypeContainer.classList.remove('hidden');
+      }
+    });
+
+    function resetInputs() {
+      areaInput.classList.add('hidden');
+      linearFeetInput.classList.add('hidden');
+      windowCountInput.classList.add('hidden');
+      followUpQuestions.classList.add('hidden');
+      materialTypeContainer.classList.add('hidden');
+      fenceMaterialTypeContainer.classList.add('hidden');
+      deckMaterialTypeContainer.classList.add('hidden');
+      windowTypeContainer.classList.add('hidden');
+    }
+
+    function calculateEstimate() {
+      let estimate = 0;
+      const yearsSinceCleaned = parseInt(document.getElementById('yearsSinceCleaned').value);
+      const materialType = document.getElementById('materialType').value;
+      const fenceMaterialType = document.getElementById('fenceMaterialType').value;
+      const deckMaterialType = document.getElementById('deckMaterialType').value;
+      const windowType = document.getElementById('windowType').value;
+
+      // Pricing logic
+      const service = serviceType.value;
+      if (service === 'houseWash') {
+        const area = parseFloat(document.getElementById('area').value);
+        estimate = area * 0.23;
+        if (materialType === 'bareWood') estimate += 75;
+      } else if (service === 'patioClean') {
+        const area = parseFloat(document.getElementById('area').value);
+        estimate = area * 0.35;
+      } else if (service === 'fenceClean') {
+        const linearFeet = parseFloat(document.getElementById('linearFeet').value);
+        estimate = linearFeet * 1;
+        if (fenceMaterialType === 'bareWood') estimate *= 2;
+      } else if (service === 'deckClean') {
+        const area = parseFloat(document.getElementById('area').value);
+        estimate = area * 0.35;
+        if (deckMaterialType === 'paintedWood') estimate += 25;
+        if (deckMaterialType === 'bareWood') estimate *= 2;
+      } else if (service === 'windowClean') {
+        const windowCount = parseInt(document.getElementById('windowCount').value);
+        estimate = windowCount * 10;
+        if (windowType === 'interiorExterior') estimate *= 2;
+      }
+
+      if (yearsSinceCleaned === 3) estimate += 25;
+      else if (yearsSinceCleaned === 4) estimate += 50;
+
+      estimateDisplay.textContent = `Estimated Cost: $${estimate.toFixed(2)}`;
+      estimateResult.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
