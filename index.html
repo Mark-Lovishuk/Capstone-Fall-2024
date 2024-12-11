@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Meta tags for character encoding and responsive design -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ML Power Washing Quote Request</title>
+
+  <!-- Including Tailwind CSS for styling -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-r from-blue-500 to-purple-500 p-6">
+  <!-- Form container with a white background and shadow effect -->
   <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
     <h2 class="text-2xl font-semibold text-gray-800 mb-4">ML Power Washing Quote Request</h2>
 
+    <!-- Form to request a quote -->
     <form id="estimateForm" class="space-y-4">
-      <!-- Select Service -->
+      <!-- Select Service Dropdown -->
       <div>
         <label class="block font-semibold text-gray-700">Select Service:</label>
         <select id="serviceType" class="w-full p-2 border border-gray-300 rounded focus:outline-none" required>
@@ -24,33 +29,33 @@
         </select>
       </div>
 
-      <!-- Area Input -->
+      <!-- Area Input for services like house wash, patio, or deck -->
       <div id="areaInput" class="hidden">
         <label class="block font-semibold text-gray-700">Enter Area (sq ft):</label>
         <input type="number" id="area" class="w-full p-2 border border-gray-300 rounded focus:outline-none" placeholder="Enter square footage" min="0" required>
         <div id="areaError" class="text-red-500 text-sm hidden">Please enter a valid number.</div>
       </div>
 
-      <!-- Linear Feet Input -->
+      <!-- Linear Feet Input for fence cleaning -->
       <div id="linearFeetInput" class="hidden">
         <label class="block font-semibold text-gray-700">Enter Length (linear ft):</label>
         <input type="number" id="linearFeet" class="w-full p-2 border border-gray-300 rounded focus:outline-none" placeholder="Enter linear feet" min="0" required>
         <div id="linearFeetError" class="text-red-500 text-sm hidden">Please enter a valid number.</div>
       </div>
 
-      <!-- Window Count Input -->
+      <!-- Window Count Input for window cleaning -->
       <div id="windowCountInput" class="hidden">
         <label class="block font-semibold text-gray-700">Number of Windows:</label>
         <input type="number" id="windowCount" class="w-full p-2 border border-gray-300 rounded focus:outline-none" placeholder="Enter number of windows" min="0" required>
         <div id="windowCountError" class="text-red-500 text-sm hidden">Please enter a valid number.</div>
         <label class="block font-semibold text-gray-700">Window Type:</label>
-          <select id="windowType" class="w-full  p-2 border border-gray-300 rounded focus:outline-none">
-            <option value="exterior">Exterior Only</option>
-            <option value="interiorExterior">Interior & Exterior (Price x2)</option>
-          </select>
+        <select id="windowType" class="w-full p-2 border border-gray-300 rounded focus:outline-none">
+          <option value="exterior">Exterior Only</option>
+          <option value="interiorExterior">Interior & Exterior (Price x2)</option>
+        </select>
       </div>
 
-      <!-- Follow-up Questions -->
+      <!-- Follow-up Questions like material type and how long since last cleaned -->
       <div id="followUpQuestions" class="space-y-4 hidden">
         <div>
           <label class="block font-semibold text-gray-700">How long since it was last cleaned?</label>
@@ -61,7 +66,7 @@
           </select>
         </div>
 
-        <!-- Material Type Follow-up -->
+        <!-- Material Type Follow-up for house wash -->
         <div id="materialTypeContainer" class="hidden">
           <label class="block font-semibold text-gray-700">Material Type:</label>
           <select id="materialType" class="w-full p-2 border border-gray-300 rounded focus:outline-none">
@@ -93,22 +98,13 @@
             <option value="bareWood">Bare Wood (price x2)</option>
           </select>
         </div>
-
-        <!-- Window Type Follow-up -->
-        <div id="windowTypeContainer" class="hidden">
-          <!-- <label class="block font-semibold text-gray-700">Window Type:</label>
-          <select id="windowType" class="w-full hidden p-2 border border-gray-300 rounded focus:outline-none">
-            <option value="exterior">Exterior Only</option>
-            <option value="interiorExterior">Interior & Exterior (Price x2)</option>
-          </select> -->
-        </div>
       </div>
 
-      <!-- Estimate Button -->
+      <!-- Button to calculate the estimate -->
       <button type="button" onclick="calculateEstimate()" class="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 focus:outline-none">Calculate Estimate</button>
     </form>
 
-    <!-- Display Estimate -->
+    <!-- Display the Estimate Result -->
     <div id="estimateResult" class="mt-4 hidden p-4 bg-gray-50 border rounded text-gray-800">
       <h3 class="text-xl font-semibold">Estimate</h3>
       <p id="estimateDisplay"></p>
@@ -116,6 +112,7 @@
   </div>
 
   <script>
+    // Event listeners for the service type selection
     const serviceType = document.getElementById('serviceType');
     const areaInput = document.getElementById('areaInput');
     const linearFeetInput = document.getElementById('linearFeetInput');
@@ -129,6 +126,7 @@
     const estimateDisplay = document.getElementById('estimateDisplay');
     const estimateResult = document.getElementById('estimateResult');
 
+    // Display relevant input fields based on selected service
     serviceType.addEventListener('change', () => {
       resetInputs();
       const service = serviceType.value;
@@ -140,7 +138,6 @@
       } else if (service === 'windowClean') {
         windowCountInput.classList.remove('hidden');
         windowTypeContainer.classList.remove('hidden');
-        // followUpQuestions.classList.remove('hidden');
         windowType.classList.remove('hidden');
       }
 
@@ -150,13 +147,6 @@
 
       if (service === 'houseWash') {
         materialTypeContainer.classList.remove('hidden');
-        document.getElementById('materialType').innerHTML = `
-          <option value="standard">Standard</option>
-          <option value="bareWood">Bare Wood (additional charges)</option>
-          <option value="vinyl">Vinyl</option>
-          <option value="hardieBoard">Hardie Board</option>
-          <option value="paintedShingle">Painted Shingle</option>
-        `;
       } else if (service === 'fenceClean') {
         fenceMaterialTypeContainer.classList.remove('hidden');
       } else if (service === 'deckClean') {
@@ -164,6 +154,7 @@
       }
     });
 
+    // Reset all input fields
     function resetInputs() {
       areaInput.classList.add('hidden');
       linearFeetInput.classList.add('hidden');
@@ -175,6 +166,7 @@
       windowTypeContainer.classList.add('hidden');
     }
 
+    // Function to calculate the estimate based on input values
     function calculateEstimate() {
       let estimate = 0;
       const yearsSinceCleaned = parseInt(document.getElementById('yearsSinceCleaned').value);
@@ -183,7 +175,7 @@
       const deckMaterialType = document.getElementById('deckMaterialType').value;
       const windowType = document.getElementById('windowType').value;
 
-      // Pricing logic
+      // Service-specific pricing logic
       const service = serviceType.value;
       if (service === 'houseWash') {
         const area = parseFloat(document.getElementById('area').value);
