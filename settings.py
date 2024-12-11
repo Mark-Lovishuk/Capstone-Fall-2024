@@ -7,13 +7,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Define the SECRET_KEY used for cryptographic operations like signing cookies, etc.
 SECRET_KEY = 'django-insecure-87fi8ad1ojjl1=-4al@*nystu65jblx$(*j=wot7+_d1f+wb1!'
 
-# Set the DEBUG flag to True to enable debugging features during development
+# Set the DEBUG flag to True to enable debugging features
 DEBUG = True
 
 # List the allowed hostnames for this project. Using an empty list for now
 ALLOWED_HOSTS = []
 
-# List of installed applications, including core Django apps (like admin, auth) and the app 'app'
+# List of installed applications
 INSTALLED_APPS = [
     'django.contrib.admin', # Admin interface
     'django.contrib.auth',  # User authentication
@@ -35,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware', # Middleware for clickjacking protection
 ]
 
-# The URL configuration for the project, pointing to the main.urls module
+# The URL configuration for the project (main.urls model)
 ROOT_URLCONF = 'main.urls'
 
 # Template settings, specifying how Django should render HTML templates
