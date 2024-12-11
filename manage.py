@@ -6,7 +6,7 @@ import sys
 def main():
     
     # Set the DJANGO_SETTINGS_MODULE environment variable to point to the project's settings module
-    # This tells Django which settings to use when running commands
+    # Tells Django which settings to use when running commands
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
       
     # Try to import the Django management command execution function
